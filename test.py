@@ -2,19 +2,22 @@ import getpass
 import robin_stocks as robin
 import os
 import pickle
-# import yfinance as yahoo
+import yfinance as yahoo
 # dependencies must be added to requirements.txt Alexa file
 
 def login():
 	# hoping that extended session (30 days) works properly with Robinhood api. 86400 (1 day) is default
 	session = robin.login(expiresIn=86400*30)
+	# Amazon Literal
+
 	print(session)
 
 
 if __name__ == "__main__":
-	login()
+	# login()
 
 	portfolio = robin.build_holdings()
+	print(robin.urls.login_url())
 	for key,value in portfolio.items():
 		print(key,value)
 
