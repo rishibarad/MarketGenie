@@ -1,4 +1,8 @@
+import json
 import boto3
+# from datetime import date, timedelta
+# import yfinance as yf
+from botocore.vendored import requests
 
 # These are the helper functions 
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
@@ -34,17 +38,17 @@ def get_welcome_response():
     """
     session_attributes = {}
     card_title = "Welcome"
-    speech_output = "What up what up what up, your application has started!"
+    speech_output = "Hi! Welcome to the Genie! You can ask a simple question like what a certain company ticker's price is at or you can add or remove a company from your watchlist!"
     # If the user either does not reply to the welcome message or says something
     # that is not understood, they will be prompted again with this text.
-    reprompt_text = "I don't know if you heard me, welcome to your custom alexa application!"
+    reprompt_text = "I don't know if you heard me, welcome to the Genie!"
     should_end_session = False
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
     
 def handle_session_end_request():
     card_title = "Session Ended"
-    speech_output = "Thank you for trying the Alexa Skills Kit sample. " \
+    speech_output = "Thank you for using the Genie. " \
                     "Have a nice day! "
     # Setting this to true ends the session and exits the skill.
     should_end_session = True
@@ -76,6 +80,7 @@ def on_session_ended(session_ended_request, session):
     # add cleanup logic here
 
 def get_name(ticker):
+    ticker = ticker.upper()
     url = "http://d.yimg.com/autoc.finance.yahoo.com/autoc?query={}&region=1&lang=en".format(ticker)
 
     result = requests.get(url).json()
@@ -83,16 +88,36 @@ def get_name(ticker):
     for x in result['ResultSet']['Result']:
         if x['symbol'] == ticker:
             return x['name'].replace('&', ' and ')
-    return "I'm sorry I couldn't find the name you were looking for!"
+    return None
+    
+    
 
 def add_watchList(intent, session):
-    ticker = intent['slots']['ticker']['value']
+    # ticker = intent['slots']['ticker']['value']
+    ticker = intent['slots']['ticker']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
+    #ticker = ticker.upper()
     userID = session['user']['userId']
     
     client = boto3.resource("dynamodb")
-    table = client.Table('MarketGenieDynamo')
+    table = client.Table('WatchlistDynamo')
     response = table.put_item(
          Item={
+                'userId': userID,
+                'Ticker': ticker
+           }
+    ) 
+    return response
+    
+def remove_watchList(intent, session):
+    #ticker = intent['slots']['ticker']['value']
+    ticker = intent['slots']['ticker']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
+    #ticker = ticker.upper()
+    userID = session['user']['userId']
+    
+    client = boto3.resource("dynamodb")
+    table = client.Table('WatchlistDynamo')
+    response = table.delete_item(
+         Key={
                 'userId': userID,
                 'Ticker': ticker
            }
@@ -108,21 +133,75 @@ def on_intent(intent_request, session):
     # Dispatch to your skill's intent handlers
     if intent_name == "AddWatchlistIntent":
         results = add_watchList(intent, session)
-        company = get_name(intent['slots']['ticker']['value'])
+        ticker = intent['slots']['ticker']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
+        company = get_name(ticker)
         
-        speech_output = "I couldn't add {} to your watchlist".format(company)
-        
-        if results:
-            speech_output = "You have successfully added {} to your watchlist".format(company)
+        if company:
+            if results:
+                speech_output = "You have successfully added {} to your watchlist".format(company)
+            # elif results != 'ConditionalCheckFailedException':
+            #     speech_output = "You've already added {} to your watchlist".format(company)
+            else:
+                speech_output = "I couldn't add {} to your watchlist".format(company)
+            
+            reprompt_text = 'Please try again.'
+        else:
+            speech_output = "I'm sorry I couldn't find that company, please try again"
+            reprompt_text = "What company do you want to add to your watchlist?"
+            
         session_attributes = {}
         should_end_session = False
-        reprompt_text = 'Please try again.'
-    
         card_title = "Add to watchlist"
+            
         return build_response(session_attributes, build_speechlet_response(
             card_title, speech_output, reprompt_text, should_end_session))
-    # elif intent_name == "insult":
-    #     return get_insult_response(intent, session)
+            
+    elif intent_name == "RemoveWatchlistIntent":
+        results = remove_watchList(intent, session)
+        ticker = intent['slots']['ticker']['resolutions']['resolutionsPerAuthority'][0]['values'][0]['value']['name']
+        company = get_name(ticker)
+        
+        if company:
+            if results:
+                speech_output = "You have successfully removed {} from your watchlist".format(company)
+            # elif results != 'ConditionalCheckFailedException':
+            #     speech_output = "You've already added {} to your watchlist".format(company)
+            else:
+                speech_output = "I couldn't remove {} from your watchlist".format(company)
+            
+            reprompt_text = 'Please try again.'
+        else:
+            speech_output = "I'm sorry I couldn't find that company, please try again"
+            reprompt_text = "What company do you want to add to your watchlist?"
+            
+        session_attributes = {}
+        should_end_session = False
+        card_title = "Remove from watchlist"
+            
+        return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+            
+    # elif intent_name == "StockPriceIntent":
+    #     ticker = intent["slots"]["ticker"]["value"]
+    #     ticker = ticker.upper()
+        
+    #     # Get stock data and report
+    #     tomorrow = date.today() + timedelta(days=1)
+    #     stock_data = yf.download(ticker, start=date.today(), end=tomorrow)
+
+    #     company = get_name(ticker)
+    #     price = stock_data.iloc[0][3]
+    #     dollars = int(price)
+    #     cents = int((price - dollars) * 100)
+
+    #     speak_output = company + " is at " + str(dollars) + " dollars and " + str(cents) + " cents."
+    #     session_attributes = {}
+    #     should_end_session = False
+    #     card_title = "Stock Price"
+    #     reprompt_text = "I'm sorry I can't get the price of that company right now, please try again"
+    #     return build_response(session_attributes, build_speechlet_response(
+    #         card_title, speech_output, reprompt_text, should_end_session))
+        
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
@@ -155,3 +234,5 @@ def lambda_handler(event, context):
         return on_intent(event['request'], event['session'])
     elif event['request']['type'] == "SessionEndedRequest":
         return on_session_ended(event['request'], event['session'])
+
+
