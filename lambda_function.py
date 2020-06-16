@@ -1,8 +1,11 @@
 import json
 import boto3
-# from datetime import date, timedelta
-# import yfinance as yf
+from datetime import date, timedelta
+import yfinance as yf
+import pandas as pd
+import numpy as n
 from botocore.vendored import requests
+from boto3.dynamodb.conditions import Key
 
 # These are the helper functions 
 def build_speechlet_response(title, output, reprompt_text, should_end_session):
@@ -124,6 +127,16 @@ def remove_watchList(intent, session):
     ) 
     return response
 
+def tickers_from_user(session):
+    userID = session['user']['userId']
+        
+    client = boto3.resource("dynamodb")
+    table = client.Table('WatchlistDynamo')
+    response = table.query(
+        KeyConditionExpression=Key('userId').eq(userID)
+    )
+    return response
+
 def on_intent(intent_request, session):
     """ Called when the user specifies an intent for this skill """
 
@@ -181,27 +194,122 @@ def on_intent(intent_request, session):
         return build_response(session_attributes, build_speechlet_response(
             card_title, speech_output, reprompt_text, should_end_session))
             
-    # elif intent_name == "StockPriceIntent":
-    #     ticker = intent["slots"]["ticker"]["value"]
-    #     ticker = ticker.upper()
+    elif intent_name == "StockPriceIntent":
+        ticker = intent["slots"]["ticker"]["value"]
+        ticker = ticker.upper()
         
-    #     # Get stock data and report
-    #     tomorrow = date.today() + timedelta(days=1)
-    #     stock_data = yf.download(ticker, start=date.today(), end=tomorrow)
+        # Get stock data and report
+        tomorrow = date.today() + timedelta(days=1)
+        stock_data = yf.download(ticker, start=date.today(), end=tomorrow)
 
-    #     company = get_name(ticker)
-    #     price = stock_data.iloc[0][3]
-    #     dollars = int(price)
-    #     cents = int((price - dollars) * 100)
+        company = get_name(ticker)
+        price = stock_data.iloc[0][3]
+        dollars = int(price)
+        cents = int((price - dollars) * 100)
 
-    #     speak_output = company + " is at " + str(dollars) + " dollars and " + str(cents) + " cents."
-    #     session_attributes = {}
-    #     should_end_session = False
-    #     card_title = "Stock Price"
-    #     reprompt_text = "I'm sorry I can't get the price of that company right now, please try again"
-    #     return build_response(session_attributes, build_speechlet_response(
-    #         card_title, speech_output, reprompt_text, should_end_session))
+        speech_output = company + " is at " + str(dollars) + " dollars and " + str(cents) + " cents."
+        session_attributes = {}
+        should_end_session = False
+        card_title = "Stock Price"
+        reprompt_text = "I'm sorry I can't get the price of that company right now, please try again"
+        return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+            
+    elif intent_name == "CheckWatchlistIntent":
+        results = tickers_from_user(session)
         
+        if results["Count"] == 1:
+            company = get_name(results["Items"][0]["Ticker"])
+            speech_output = "The only company in your watchlist is {}".format(company)
+        elif results["Count"] > 1:
+            companies = []
+            for result in results["Items"]:
+                ticker = result['Ticker']
+                company = get_name(ticker)
+                companies.append(company)
+                print (company)
+            print(*companies)
+            speech_output = "The companies in your watchlist are "
+            for x in range(len(companies[:-1])):
+                speech_output += companies[x] + " "
+            else:
+                speech_output += "and " + companies[-1]
+        else:
+            speech_output = "You don't have any companies in your watchlist. To add one say a command such as add a company to my watchlist."
+            
+        session_attributes = {}
+        should_end_session = False
+        card_title = "Check Watchlist"
+        reprompt_text = "I'm sorry I can't list your watchlist right now, please try again"
+        
+        return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+            
+    elif intent_name == "ReportWatchlistIntent":
+        results = tickers_from_user(session)
+        
+        if results["Count"] == 1:
+            ticker = results["Items"][0]["Ticker"]
+            company = get_name(ticker)
+            
+            tomorrow = date.today() + timedelta(days=1)
+            stock_data = yf.download(ticker, start=date.today(), end=tomorrow)
+            price = stock_data.iloc[0][3]
+            dollars = int(price)
+            cents = int((price - dollars) * 100)
+
+            speech_output = company + " is at " + str(dollars) + " dollars and " + str(cents) + " cents."
+            
+        elif results["Count"] > 1:
+            company_prices = []
+            for result in results["Items"]:
+                ticker = result['Ticker']
+                print(ticker)
+                company = get_name(ticker)
+                tomorrow = date.today() + timedelta(days=1)
+                stock_data = yf.download(ticker, start=date.today(), end=tomorrow)
+                
+                price = stock_data.iloc[0][3]
+                dollars = int(price)
+                cents = int((price - dollars) * 100)
+                dollars = str(dollars)
+                cents = str(cents)
+                
+                company_prices.append(company)
+                company_prices.append(dollars)
+                company_prices.append(cents)
+                company_prices.append(0)
+                
+            count = 1
+            print(*company_prices)
+            for x in range(len(company_prices[:-4])):
+                if count == 1 and x == 0:
+                    speech_output = "{} is at ".format(company_prices[x])
+                elif count == 1:
+                    speech_output += " {} is at ".format(company_prices[x])
+                    
+                if count == 2:
+                    speech_output += " {} dollars and ".format(company_prices[x]) 
+                    
+                if count == 3:
+                    speech_output += " {} cents, ".format(company_prices[x])
+                if count == 4:
+                    count = 0
+                count += 1
+            else:
+                speech_output += " and {} is at {} dollars and {} cents.".format(company_prices[-4], company_prices[-3], company_prices[-2])
+            
+        else:
+            speech_output = "You don't have any companies in your watchlist. To add one say a command such as add a company to my watchlist."
+            
+        session_attributes = {}
+        should_end_session = False
+        card_title = "Check Watchlist"
+        reprompt_text = "I'm sorry I can't list your watchlist right now, please try again"
+        
+        return build_response(session_attributes, build_speechlet_response(
+            card_title, speech_output, reprompt_text, should_end_session))
+            
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
@@ -234,5 +342,3 @@ def lambda_handler(event, context):
         return on_intent(event['request'], event['session'])
     elif event['request']['type'] == "SessionEndedRequest":
         return on_session_ended(event['request'], event['session'])
-
-
