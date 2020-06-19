@@ -3,11 +3,11 @@
     "publishingInformation": {
       "locales": {
         "en-US": {
-          "summary": "Sample Short Description",
+          "summary": "Market Genie allows you to get real-time stock prices and gives you a report on your personal watchlist.",
           "examplePhrases": [
-            "Alexa open hello world",
-            "hello",
-            "help"
+            "Alexa open market genie",
+            "Alexa, ask market genie what\u0027s the price of AAPL",
+            "Alexa, ask market genie to report my watchlist"
           ],
           "keywords": [
             "finance",
@@ -19,9 +19,93 @@
             "investing"
           ],
           "name": "Market Genie",
-          "description": "Sample Full Description",
+          "description": "Market Genie allows you to check real-time stock prices and lets you add or remove stocks to a personal watchlist. Market genie allows you to check the stocks in your watchlist and will also give you a report on the full watchlist. \n\nSay \"Alexa, ask Market Genie what\u0027s the price of {ticker}\". Market Genie responds to a ticker name instead of company name.\n\nSay \"Alexa, ask Market Genie how is my watchlist doing.\" Market Genie will respond with the companies added and their stock price. \n\nDisclaimer: Market Genie is not guaranteed the accuracy of stock information and is only for informational purposes only. Do not use Market Genie for investment decision, they shall not be liable to any person for delays or inaccuracies in stock data.",
           "smallIconUri": "file://assets/images/en-US_smallIconUri.png",
           "largeIconUri": "file://assets/images/en-US_largeIconUri.png"
+        },
+        "en-CA": {
+          "summary": "Market Genie allows you to get real-time stock prices and gives you a report on your personal watchlist.",
+          "examplePhrases": [
+            "Alexa open market genie",
+            "Alexa, ask market genie what\u0027s the price of AAPL",
+            "Alexa, ask market genie to report my watchlist"
+          ],
+          "keywords": [
+            "finance",
+            "stocks",
+            "watchlist",
+            "stock",
+            "performance",
+            "invest",
+            "investing"
+          ],
+          "name": "Market Genie",
+          "description": "Market Genie allows you to check real-time stock prices and lets you add or remove stocks to a personal watchlist. Market genie allows you to check the stocks in your watchlist and will also give you a report on the full watchlist. \n\nSay \"Alexa, ask Market Genie what\u0027s the price of {ticker}\". Market Genie responds to a ticker name instead of company name.\n\nSay \"Alexa, ask Market Genie how is my watchlist doing.\" Market Genie will respond with the companies added and their stock price. \n\nDisclaimer: Market Genie is not guaranteed the accuracy of stock information and is only for informational purposes only. Do not use Market Genie for investment decision, they shall not be liable to any person for delays or inaccuracies in stock data.",
+          "smallIconUri": "file://assets/images/en-CA_smallIconUri.png",
+          "largeIconUri": "file://assets/images/en-CA_largeIconUri.png"
+        },
+        "en-IN": {
+          "summary": "Market Genie allows you to get real-time stock prices and gives you a report on your personal watchlist.",
+          "examplePhrases": [
+            "Alexa open market genie",
+            "Alexa, ask market genie what\u0027s the price of AAPL",
+            "Alexa, ask market genie to report my watchlist"
+          ],
+          "keywords": [
+            "finance",
+            "stocks",
+            "watchlist",
+            "stock",
+            "performance",
+            "invest",
+            "investing"
+          ],
+          "name": "Market Genie",
+          "description": "Market Genie allows you to check real-time stock prices and lets you add or remove stocks to a personal watchlist. Market genie allows you to check the stocks in your watchlist and will also give you a report on the full watchlist. \n\nSay \"Alexa, ask Market Genie what\u0027s the price of {ticker}\". Market Genie responds to a ticker name instead of company name.\n\nSay \"Alexa, ask Market Genie how is my watchlist doing.\" Market Genie will respond with the companies added and their stock price. \n\nDisclaimer: Market Genie is not guaranteed the accuracy of stock information and is only for informational purposes only. Do not use Market Genie for investment decision, they shall not be liable to any person for delays or inaccuracies in stock data.",
+          "smallIconUri": "file://assets/images/en-IN_smallIconUri.png",
+          "largeIconUri": "file://assets/images/en-IN_largeIconUri.png"
+        },
+        "en-AU": {
+          "summary": "Market Genie allows you to get real-time stock prices and gives you a report on your personal watchlist.",
+          "examplePhrases": [
+            "Alexa open market genie",
+            "Alexa, ask market genie what\u0027s the price of AAPL",
+            "Alexa, ask market genie to report my watchlist"
+          ],
+          "keywords": [
+            "finance",
+            "stocks",
+            "watchlist",
+            "stock",
+            "performance",
+            "invest",
+            "investing"
+          ],
+          "name": "Market Genie",
+          "description": "Market Genie allows you to check real-time stock prices and lets you add or remove stocks to a personal watchlist. Market genie allows you to check the stocks in your watchlist and will also give you a report on the full watchlist. \n\nSay \"Alexa, ask Market Genie what\u0027s the price of {ticker}\". Market Genie responds to a ticker name instead of company name.\n\nSay \"Alexa, ask Market Genie how is my watchlist doing.\" Market Genie will respond with the companies added and their stock price. \n\nDisclaimer: Market Genie is not guaranteed the accuracy of stock information and is only for informational purposes only. Do not use Market Genie for investment decision, they shall not be liable to any person for delays or inaccuracies in stock data.",
+          "smallIconUri": "file://assets/images/en-AU_smallIconUri.png",
+          "largeIconUri": "file://assets/images/en-AU_largeIconUri.png"
+        },
+        "en-GB": {
+          "summary": "Market Genie allows you to get real-time stock prices and gives you a report on your personal watchlist.",
+          "examplePhrases": [
+            "Alexa open market genie",
+            "Alexa, ask market genie what\u0027s the price of AAPL",
+            "Alexa, ask market genie to report my watchlist"
+          ],
+          "keywords": [
+            "finance",
+            "stocks",
+            "watchlist",
+            "stock",
+            "performance",
+            "invest",
+            "investing"
+          ],
+          "name": "Market Genie",
+          "description": "Market Genie allows you to check real-time stock prices and lets you add or remove stocks to a personal watchlist. Market genie allows you to check the stocks in your watchlist and will also give you a report on the full watchlist. \n\nSay \"Alexa, ask Market Genie what\u0027s the price of {ticker}\". Market Genie responds to a ticker name instead of company name.\n\nSay \"Alexa, ask Market Genie how is my watchlist doing.\" Market Genie will respond with the companies added and their stock price. \n\nDisclaimer: Market Genie is not guaranteed the accuracy of stock information and is only for informational purposes only. Do not use Market Genie for investment decision, they shall not be liable to any person for delays or inaccuracies in stock data.",
+          "smallIconUri": "file://assets/images/en-GB_smallIconUri.png",
+          "largeIconUri": "file://assets/images/en-GB_largeIconUri.png"
         }
       },
       "automaticDistribution": {
@@ -34,14 +118,14 @@
         "isActive": true
       },
       "isAvailableWorldwide": true,
-      "testingInstructions": "Must have an internet connection.  Must have the yfinance python library installed.",
+      "testingInstructions": "Must have an internet connection. They must have yfinance python library installed and if it doesn\u0027t preinstall panda and numpy, that also needs to be installed with datetime as date, timeline. We also imported boto3, boto3.dynamodb.conditions import Key, and botocore.vendored import requests in order to handle our requests to and from our dynamodb table to hold our information for our watchlist. We had an endpoint from another lambda function to host our code.",
       "category": "BUSINESS_AND_FINANCE",
       "distributionCountries": []
     },
     "apis": {
       "custom": {
         "endpoint": {
-          "uri": "arn:aws:lambda:us-east-1:414679333448:function:709723c9-fbae-4771-b7c4-c156ca5d821b:Release_0"
+          "uri": "arn:aws:lambda:us-east-2:546670340806:function:newFunction"
         },
         "interfaces": []
       }
@@ -52,12 +136,24 @@
       "locales": {
         "en-US": {
           "privacyPolicyUrl": ""
+        },
+        "en-CA": {
+          "privacyPolicyUrl": ""
+        },
+        "en-IN": {
+          "privacyPolicyUrl": ""
+        },
+        "en-AU": {
+          "privacyPolicyUrl": ""
+        },
+        "en-GB": {
+          "privacyPolicyUrl": ""
         }
       },
       "containsAds": false,
       "isExportCompliant": true,
       "isChildDirected": false,
-      "usesPersonalInfo": true
+      "usesPersonalInfo": false
     }
   }
 }
